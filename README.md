@@ -5,7 +5,7 @@ Gem for action tracking.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'action_tracking', git: 'https://github.com/CD2/*the_repo*'
+gem 'action_tracking', git: 'https://github.com/CD2/action-tracking'
 ```
 
 And then execute:
