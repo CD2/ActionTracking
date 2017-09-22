@@ -21,5 +21,5 @@ Gem::Specification.new do |s|
   s.add_dependency 'rails', '~> 5.1.3'
 
   s.add_dependency 'pg'
-  s.add_dependency 'binding_of_caller'
+  # s.add_dependency 'cord'
 end
