@@ -10,45 +10,39 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170905154523) do
+ActiveRecord::Schema.define(version: 20170922154455) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-  enable_extension "cube"
-  enable_extension "earthdistance"
+
+  create_table "action_tracking_actions", force: :cascade do |t|
+    t.string "author_type", null: false
+    t.bigint "author_id", null: false
+    t.string "actionable_type", null: false
+    t.bigint "actionable_id", null: false
+    t.integer "action_type", null: false
+    t.integer "counter", default: 1
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actionable_id", "actionable_type"], name: "index_actions_on_actionable"
+    t.index ["author_id", "author_type", "actionable_id", "actionable_type"], name: "index_actions_on_author_and_actionable"
+    t.index ["author_type", "author_id"], name: "index_action_tracking_actions_on_author_type_and_author_id"
+  end
+
+  create_table "action_tracking_documents", force: :cascade do |t|
+    t.string "actionable_type", null: false
+    t.bigint "actionable_id", null: false
+    t.jsonb "counters", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actionable_id", "actionable_type"], name: "index_action_tracking_documents_on_actionable", unique: true
+    t.index ["counters"], name: "index_action_tracking_documents_on_counters", using: :gin
+  end
 
   create_table "articles", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "recommendation_documents", force: :cascade do |t|
-    t.string "recommendable_type"
-    t.bigint "recommendable_id"
-    t.jsonb "static_tags", default: {}, null: false
-    t.jsonb "tags_cache", default: {}, null: false
-    t.float "lat"
-    t.float "lng"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index "point(lng, lat)", name: "index_recommendation_documents_on_point_lng_lat", using: :gist
-    t.index ["recommendable_id", "recommendable_type"], name: "index_recommendation_documents_on_recommendable", unique: true
-    t.index ["static_tags"], name: "index_recommendation_documents_on_static_tags", using: :gin
-    t.index ["tags_cache"], name: "index_recommendation_documents_on_tags_cache", using: :gin
-  end
-
-  create_table "recommendation_votes", force: :cascade do |t|
-    t.string "voter_type"
-    t.bigint "voter_id"
-    t.string "votable_type"
-    t.bigint "votable_id"
-    t.integer "weight", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["votable_type", "votable_id"], name: "index_recommendation_votes_on_votable_type_and_votable_id"
-    t.index ["voter_id", "voter_type", "votable_id", "votable_type"], name: "one_vote_per_voter_per_votable", unique: true
-    t.index ["voter_type", "voter_id"], name: "index_recommendation_votes_on_voter_type_and_voter_id"
   end
 
   create_table "users", force: :cascade do |t|

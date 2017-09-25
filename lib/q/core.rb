@@ -43,12 +43,12 @@ module Q
 
     def self.raw_pretty
       records = raw
-      columns = records.first.keys
-      console_width = %x{tput cols}.to_f
-
       def records.inspect
         ''
       end
+      return records unless records.any?
+      columns = records.first.keys
+      console_width = `tput cols`.to_f
 
       max_lengths = []
       records.first.each do |k, _v|
