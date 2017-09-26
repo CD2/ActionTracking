@@ -30,7 +30,7 @@ module ActionTrackable
   end
 
   def record_action! action_type, actionable
-    ::ActionTracking::Action.create_or_count(
+    ::ActionTracking::Action.create_or_count_by(
       author: self, action_type: action_type, actionable: actionable
     )
   end
