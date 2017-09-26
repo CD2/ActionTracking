@@ -10,7 +10,7 @@ module ActionTracking
     config_types = ActionTracking.custom_action_types
     enum action_type: %i[creates reads updates destroys] + config_types
 
-    after_create :increment_counter
+    after_save :increment_counter
 
     def self.create_or_count_by attrs
       find_attrs = attrs.with_indifferent_access.slice(
@@ -30,8 +30,14 @@ module ActionTracking
       doc = ::ActionTracking::Document.find_or_initialize_by(
         actionable: actionable
       )
-      doc.counters[action_type] ||= 0
-      doc.counters[action_type] += 1
+      value = if saved_change_to_id?
+        counter
+      else
+        counter - counter_before_last_save
+      end
+      doc.counters = doc.counters.merge(
+        action_type => doc.counters[action_type] + value
+      )
       doc.save!
     end
   end
