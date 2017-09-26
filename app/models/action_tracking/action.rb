@@ -2,8 +2,8 @@
 
 module ActionTracking
   class Action < ::ActionTracking::ActionTrackingRecord
-    belongs_to :author, polymorphic: true, inverse_of: :actions_as_author
-    belongs_to :actionable, polymorphic: true, inverse_of: :actions_as_actionable
+    belongs_to :author, polymorphic: true
+    belongs_to :actionable, polymorphic: true
 
     validates :action_type, :counter, presence: true
 
