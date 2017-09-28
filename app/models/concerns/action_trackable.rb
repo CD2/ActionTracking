@@ -23,6 +23,23 @@ module ActionTrackable
     }
 
     after_create :action_tracking_document
+
+    def self.by_action_count(arg = :all)
+      if arg.is_a? Hash
+        action_type, direction = arg.first.map &:to_s
+      else
+        action_type, direction = arg.to_s, 'DESC'
+      end
+
+      result = left_joins(:actions_as_actionable)
+      unless action_type == 'all'
+        result = result.where('action_tracking_actions.action_type = ? OR ' +
+          'action_tracking_actions.id IS NULL',
+          ActionTracking::Action.action_types[action_type]
+        )
+      end
+      result.group(:id).order("COUNT(action_tracking_actions.id) #{direction}")
+    end
   end
 
   def action_tracking_document
