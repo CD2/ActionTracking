@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,8 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170922154455) do
-
+ActiveRecord::Schema.define(version: 20_170_922_154_455) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -24,9 +25,9 @@ ActiveRecord::Schema.define(version: 20170922154455) do
     t.integer "counter", default: 1
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["actionable_id", "actionable_type"], name: "index_actions_on_actionable"
-    t.index ["author_id", "author_type", "actionable_id", "actionable_type"], name: "index_actions_on_author_and_actionable"
-    t.index ["author_type", "author_id"], name: "index_action_tracking_actions_on_author_type_and_author_id"
+    t.index %w[actionable_id actionable_type], name: "index_actions_on_actionable"
+    t.index %w[author_id author_type actionable_id actionable_type], name: "index_actions_on_author_and_actionable"
+    t.index %w[author_type author_id], name: "index_action_tracking_actions_on_author_type_and_author_id"
   end
 
   create_table "action_tracking_documents", force: :cascade do |t|
@@ -35,7 +36,7 @@ ActiveRecord::Schema.define(version: 20170922154455) do
     t.jsonb "counters", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["actionable_id", "actionable_type"], name: "index_action_tracking_documents_on_actionable", unique: true
+    t.index %w[actionable_id actionable_type], name: "index_action_tracking_documents_on_actionable", unique: true
     t.index ["counters"], name: "index_action_tracking_documents_on_counters", using: :gin
   end
 
@@ -50,5 +51,4 @@ ActiveRecord::Schema.define(version: 20170922154455) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
-
 end

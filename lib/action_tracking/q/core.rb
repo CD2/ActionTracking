@@ -22,7 +22,7 @@ module ActionTracking
         end
       end
       raise SyntaxError, 'Unmatched parentheses' unless depth == 0
-      return string
+      string
     end
 
     class Core < ::ActiveRecord::Base
@@ -77,16 +77,16 @@ module ActionTracking
 
       private
 
-      def self.draw_row items, limits, opts = {}
+      def self.draw_row(items, limits, opts = {})
         options = { inspect: true }.merge(opts.to_options)
         items.size.times do |i|
           item = options[:inspect] ? items[i].inspect : items[i].to_s
           if item.size > limits[i]
-            items[i] = item[0...(limits[i]-3)] + '...'
+            items[i] = item[0...(limits[i] - 3)] + '...'
           else
             diff = limits[i] - item.size
             padding1 = padding2 = ' ' * (diff / 2.0)
-            padding2 = padding2 + ' ' if diff.odd?
+            padding2 += ' ' if diff.odd?
             items[i] = padding1 + item + padding2
           end
         end

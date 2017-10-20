@@ -4,23 +4,17 @@ module ActionTrackable
   extend ActiveSupport::Concern
 
   included do
-    has_one :action_tracking_document, {
-      as: :actionable,
-      inverse_of: :actionable,
-      class_name: '::ActionTracking::Document'
-    }
+    has_one :action_tracking_document, as: :actionable,
+                                       inverse_of: :actionable,
+                                       class_name: '::ActionTracking::Document'
 
-    has_many :actions_as_author, {
-      as: :author,
-      inverse_of: :author,
-      class_name: '::ActionTracking::Action'
-    }
+    has_many :actions_as_author, as: :author,
+                                 inverse_of: :author,
+                                 class_name: '::ActionTracking::Action'
 
-    has_many :actions_as_actionable, {
-      as: :actionable,
-      inverse_of: :actionable,
-      class_name: '::ActionTracking::Action'
-    }
+    has_many :actions_as_actionable,       as: :actionable,
+                                           inverse_of: :actionable,
+                                           class_name: '::ActionTracking::Action'
 
     after_create :action_tracking_document
 
@@ -28,15 +22,15 @@ module ActionTrackable
       if arg.is_a? Hash
         action_type, direction = arg.first.map &:to_s
       else
-        action_type, direction = arg.to_s, 'DESC'
+        action_type = arg.to_s
+        direction = 'DESC'
       end
 
       result = left_joins(:actions_as_actionable)
       unless action_type == 'all'
-        result = result.where('action_tracking_actions.action_type = ? OR ' +
+        result = result.where('action_tracking_actions.action_type = ? OR ' \
           'action_tracking_actions.id IS NULL',
-          ActionTracking::Action.action_types[action_type]
-        )
+                              ActionTracking::Action.action_types[action_type])
       end
       result.group(:id).order("COUNT(action_tracking_actions.id) #{direction}")
     end
@@ -46,7 +40,7 @@ module ActionTrackable
     super || (new_record? ? nil : create_action_tracking_document!)
   end
 
-  def record_action! action_type, actionable
+  def record_action!(action_type, actionable)
     ::ActionTracking::Action.create_or_count_by(
       author: self, action_type: action_type, actionable: actionable
     )

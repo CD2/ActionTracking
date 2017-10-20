@@ -12,7 +12,7 @@ module ActionTracking
 
     after_save :increment_counter
 
-    def self.create_or_count_by attrs
+    def self.create_or_count_by(attrs)
       find_attrs = attrs.with_indifferent_access.slice(
         :author, :author_id, :author_type, :actionable, :actionable_id,
         :actionable_type, :action_type
@@ -31,9 +31,9 @@ module ActionTracking
         actionable: actionable
       )
       value = if saved_change_to_id?
-        counter
-      else
-        counter - counter_before_last_save
+                counter
+              else
+                counter - counter_before_last_save
       end
       doc.counters = doc.counters.merge(
         action_type => doc.counters[action_type] + value

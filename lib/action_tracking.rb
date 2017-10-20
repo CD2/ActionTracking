@@ -11,5 +11,4 @@ module ActionTracking
       yield self
     end
   end
-
 end
